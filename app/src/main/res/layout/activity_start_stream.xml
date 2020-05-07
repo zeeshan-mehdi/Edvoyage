@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -34,6 +34,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
+
+<!--    <Button-->
+<!--        android:id="@+id/sendMessage"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="40dp"-->
+<!--        android:layout_marginStart="40dp"-->
+<!--        android:layout_marginLeft="40dp"-->
+<!--        android:layout_marginEnd="40dp"-->
+<!--        android:layout_marginRight="40dp"-->
+<!--        android:background="@drawable/round_button_main"-->
+<!--        android:padding="15dp"-->
+<!--        android:text="Send Message"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="20dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/livestream"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/divider" />-->
+
     <View
         android:id="@+id/divider"
         android:layout_width="409dp"
@@ -60,4 +80,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

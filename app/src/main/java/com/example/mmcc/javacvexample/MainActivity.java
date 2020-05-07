@@ -1,59 +1,54 @@
 package com.example.mmcc.javacvexample;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
+import com.example.mmcc.javacvexample.adapter.MessageListAdapter;
+import com.example.mmcc.javacvexample.model.Message;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.bytedeco.javacpp.FlyCapture2;
 import org.bytedeco.javacpp.avutil;
 import org.bytedeco.javacv.FFmpegFrameFilter;
 import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameFilter;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import static org.bytedeco.javacpp.RealSense.camera;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -118,11 +113,19 @@ public class MainActivity extends Activity implements OnClickListener {
     ImageButton switchCamera,rotateScreen;
     private int currentCameraId;
 
+    private RecyclerView mMessageRecycler;
+    private MessageListAdapter mMessageAdapter;
+    private List<Message> messageList;
 
+    EditText input;
+    private Socket socket;
+    String currentUser;
+    private View btnSend;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        messageList = new ArrayList<>();
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         setContentView(R.layout.activity_main);
@@ -139,7 +142,10 @@ public class MainActivity extends Activity implements OnClickListener {
         streamKey = getIntent().getStringExtra("stream_key");
 
         switchCamera = findViewById(R.id.switchCamera);
-        //rotateScreen = findViewById(R.id.rotate);
+        mMessageRecycler = (RecyclerView) findViewById(R.id.recyclerView);
+        //rotateScreen = findViewById(R.id.rotate)
+        input =(EditText) findViewById(R.id.editTextMessage);
+
 
         final int orientation =  MainActivity.this.getResources().getConfiguration().orientation;
 
@@ -168,6 +174,8 @@ public class MainActivity extends Activity implements OnClickListener {
             }
         });
 
+        btnSend = findViewById(R.id.btnSend);
+
         if(streamKey!=null &&streamKey!=""){
             ffmpeg_link+=streamKey;
             initLayout();
@@ -175,11 +183,106 @@ public class MainActivity extends Activity implements OnClickListener {
             Toast.makeText(this, "Could Not Create Stream Try Again", Toast.LENGTH_SHORT).show();
         }
 
+        btnSend.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendMessage();
+            }
+        });
+
+
+        switchLiveChatVisibility(false);
 
         //initLayout();
 
     }
 
+    private void switchLiveChatVisibility(boolean visible){
+        if(!visible) {
+            input.setVisibility(View.GONE);
+            btnSend.setVisibility(View.GONE);
+
+        }else{
+            input.setVisibility(View.VISIBLE);
+            btnSend.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+
+
+    private void listenForMessages() {
+
+
+        mMessageAdapter = new MessageListAdapter(this, messageList);
+        mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mMessageRecycler.setAdapter(mMessageAdapter);
+
+        try {
+            System.out.println("inside send message");
+            socket = IO.socket("https://live-education.herokuapp.com/");
+            socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    System.out.println("connected");
+                    socket.emit("username", "Admin");
+                    //socket.disconnect();
+                }
+
+            }).on("is_online", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    System.out.println("recieved online user ");
+                    //currentUser = String.valueOf(args[0]);
+                    //socket.emit("chat_message", "Hi from Admin");
+                    System.out.println(args[0]);
+                }
+            }).on("chat_message", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        System.out.println("message recieved");
+
+                        JSONObject jsonObject = new JSONObject((String)args[0]);
+
+                        System.out.println(jsonObject);
+                        String message = jsonObject.getString("message");
+                        String name = jsonObject.getString("name");
+                        if(name !=null && name.equals("Admin") ){
+                            name = "1";
+                        }
+
+                        Message m = new Message(message ,name);
+                        //JSONObject jsonMessage = args[0];
+
+                        messageList.add(m);
+
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMessageAdapter.notifyDataSetChanged(messageList);
+                                mMessageRecycler.smoothScrollToPosition(messageList.size());
+                            }
+                        });
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
+            socket.connect();
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+
+
+
+
+
+    }
 
 
     @Override
@@ -665,6 +768,8 @@ public class MainActivity extends Activity implements OnClickListener {
         }
     }
 
+
+
     @Override
     public void onClick(View v) {
         if (!recording) {
@@ -672,15 +777,33 @@ public class MainActivity extends Activity implements OnClickListener {
             startRecording();
             progressBar.setVisibility(View.VISIBLE);
             Log.w(LOG_TAG, "Start Button Pushed");
+            switchLiveChatVisibility(true);
+            listenForMessages();
             btnRecorderControl.setText("Stop");
+            btnRecorderControl.setVisibility(View.GONE);
         } else {
-            Toast.makeText(getBaseContext(), "Stopping Recording", Toast.LENGTH_LONG).show();
-            // This will trigger the audio recording loop to stop and then set isRecorderStart = false;
-            stopRecording();
-            finish();
+
             Log.w(LOG_TAG, "Stop Button Pushed");
            // btnRecorderControl.setText("Start");
         }
+
+    }
+
+    void sendMessage(){
+        String message = input.getText()!=null ? input.getText().toString():"";
+
+        input.setText("");
+        socket.emit("chat_message",message);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(getBaseContext(), "Stopping Recording", Toast.LENGTH_LONG).show();
+        // This will trigger the audio recording loop to stop and then set isRecorderStart = false;
+        stopRecording();
+        finish();
+        super.onBackPressed();
     }
 
     @Override
