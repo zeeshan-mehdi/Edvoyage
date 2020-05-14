@@ -5,8 +5,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.mmcc.javacvexample"
-        minSdkVersion 15
+        applicationId "com.advoyage.livestream.testekin"
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -63,8 +63,13 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 //    implementation group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.3'
 
+//firebase
+    implementation 'com.google.firebase:firebase-analytics:17.4.0'
 
-    implementation ('io.socket:socket.io-client:1.0.0') {
+    implementation 'com.google.firebase:firebase-firestore:21.4.3'
+
+
+    implementation('io.socket:socket.io-client:1.0.0') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
@@ -75,6 +80,7 @@ dependencies {
     implementation group: 'org.bytedeco.javacpp-presets', name: 'ffmpeg', version: '4.0.2-1.4.3', classifier: 'android-arm'
     implementation group: 'org.bytedeco.javacpp-presets', name: 'ffmpeg', version: '4.0.2-1.4.3', classifier: 'android-x86'
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha03'
+    implementation 'com.google.firebase:firebase-database:19.3.0'
 
 
 //    implementation "com.xwray:groupie:2.7.0"
@@ -83,3 +89,5 @@ dependencies {
 
 
 }
+
+apply plugin: 'com.google.gms.google-services'

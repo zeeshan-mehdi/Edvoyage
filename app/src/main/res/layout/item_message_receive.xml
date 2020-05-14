@@ -16,27 +16,10 @@
             android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_receive_message"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/sender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:maxWidth="250dp"
-                android:padding="16dp"
-
-                android:text=""
-                android:textColor="@android:color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Ali" />
 
             <TextView
                 android:id="@+id/message_receive"
@@ -47,11 +30,29 @@
 
                 android:maxWidth="250dp"
                 android:padding="16dp"
+                android:paddingBottom="0dp"
                 android:text=""
                 android:textColor="@android:color/white"
                 app:layout_constraintStart_toEndOf="@+id/sender"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Salut les amis j'espere que vous aller bien, mois ca je cerhcuer comprendre" />
+
+            <TextView
+                android:id="@+id/sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginBottom="8dp"
+                android:maxWidth="250dp"
+                android:padding="8dp"
+                android:paddingTop="0dp"
+                android:text=""
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Ali" />
 
         </LinearLayout>
 
