@@ -47,7 +47,7 @@ public class Network {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String,String> params = new HashMap<String, String>();
                 params.put("Content-Type","application/x-www-form-urlencoded");
-                String credentials = "e35f71a2-d6d6-41fa-8339-152763993f6b:w6hJR6heuf7YkStKSTHWpIudJqbt87nXYS+FKZVsuddmQL80L45ibJc0JMZZJhG4sVx0O0u1LMM";
+                String credentials = "2c580e11-fb18-416d-9275-53de7eab9e82:v7Y6gLNhxkVWuC+Qab34NpTn9SyYG0kPE0D0AoQVi0lqHGQtbOMzc2qXhI93r4b3Y2HgGBJjrFS";
                 String auth = "Basic "
                         + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 params.put("Authorization", auth);
@@ -101,7 +101,7 @@ public class Network {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String,String> params = new HashMap<String, String>();
                 params.put("Content-Type","application/x-www-form-urlencoded");
-                String credentials = "e35f71a2-d6d6-41fa-8339-152763993f6b:w6hJR6heuf7YkStKSTHWpIudJqbt87nXYS+FKZVsuddmQL80L45ibJc0JMZZJhG4sVx0O0u1LMM";
+                String credentials = "2c580e11-fb18-416d-9275-53de7eab9e82:v7Y6gLNhxkVWuC+Qab34NpTn9SyYG0kPE0D0AoQVi0lqHGQtbOMzc2qXhI93r4b3Y2HgGBJjrFS";
                 String auth = "Basic "
                         + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 params.put("Authorization", auth);

@@ -435,7 +435,7 @@ public class MainActivity extends Activity implements OnClickListener {
             // The filterString  is any ffmpeg filter.
             // Here is the link for a list: https://ffmpeg.org/ffmpeg-filters.html
             if(cameraFacing==90)
-                 filterString = "transpose=2";
+                 filterString = "transpose=2,transpose=2";
             else
                 filterString = "transpose=1";
             filter = new FFmpegFrameFilter(filterString, imageWidth, imageHeight);
